@@ -1,5 +1,39 @@
 <html>
 <head>
+    <script>
+      function validateForm() {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const comment = document.getElementById('comment').value.trim();
+        
+        const errorElement = document.getElementById('error-message');
+        const resultElement = document.getElementById('result');
+        
+        errorElement.textContent = '';
+        resultElement.textContent = '';
+        
+        if (!name || !email || !comment) {
+          errorElement.textContent = 'Все поля должны быть заполнены!';
+          return false;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          errorElement.textContent = 'Пожалуйста, введите корректный email!';
+          return false;
+        }
+        
+        resultElement.innerHTML = `
+          <h3>Спасибо за ваше сообщение, ${name}!</h3>
+          <p>Мы получили ваш комментарий и свяжемся с вами по адресу ${email}.</p>
+          <p><strong>Ваш комментарий:</strong> ${comment}</p>
+        `;
+        
+        document.getElementById('feedback-form').reset();
+        
+        return false;
+      }
+    </script>
     <style>
     * {
     margin: 0;
@@ -81,6 +115,93 @@
     .next-page a:hover {
     background-color: #2980b9;
     }
+
+    .feedback-form {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+
+    .form-title {
+      margin-bottom: 20px;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #495057;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.15s ease-in-out;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #3498db;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fadbd8;
+      border-radius: 4px;
+      text-align: center;
+      border: 1px solid #f5b7b1;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #d5f5e3;
+      border-radius: 4px;
+      border: 1px solid #a3e4d7;
+    }
+
+    .result h3 {
+      color: #27ae60;
+      margin-bottom: 10px;
+    }
     </style>
     <title>О себе</title>
 </head>
@@ -106,6 +227,31 @@
     
     <div class="info-item">
       <strong>Email:</strong> basenko.mariia@mail.ru
+    </div>
+
+    <div class="feedback-form">
+      <h2 class="form-title">Форма обратной связи</h2>
+      <form id="feedback-form" onsubmit="return validateForm()">
+        <div class="form-group">
+          <label for="name">Имя:</label>
+          <input type="text" id="name" name="name" placeholder="Введите ваше имя">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" placeholder="Введите ваш email">
+        </div>
+        
+        <div class="form-group">
+          <label for="comment">Комментарий:</label>
+          <textarea id="comment" name="comment" placeholder="Введите ваш комментарий"></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Отправить</button>
+      </form>
+      
+      <div id="error-message" class="error-message"></div>
+      <div id="result" class="result"></div>
     </div>
 
     <div class="next-page">
