@@ -2,37 +2,56 @@
 <head>
     <script>
       function validateForm() {
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const comment = document.getElementById('comment').value.trim();
-        
-        const errorElement = document.getElementById('error-message');
-        const resultElement = document.getElementById('result');
-        
-        errorElement.textContent = '';
-        resultElement.textContent = '';
-        
-        if (!name || !email || !comment) {
-          errorElement.textContent = 'Все поля должны быть заполнены!';
-          return false;
-        }
-        
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          errorElement.textContent = 'Пожалуйста, введите корректный email!';
-          return false;
-        }
-        
-        resultElement.innerHTML = `
-          <h3>Спасибо за ваше сообщение, ${name}!</h3>
-          <p>Мы получили ваш комментарий и свяжемся с вами по адресу ${email}.</p>
-          <p><strong>Ваш комментарий:</strong> ${comment}</p>
-        `;
-        
-        document.getElementById('feedback-form').reset();
-        
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const comment = document.getElementById('comment').value.trim();
+    
+    const errorElement = document.getElementById('error-message');
+    const resultElement = document.getElementById('result');
+    
+    errorElement.textContent = '';
+    resultElement.textContent = '';
+    
+    if (!name || !email || !comment) {
+        errorElement.textContent = 'Все поля должны быть заполнены!';
         return false;
-      }
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        errorElement.textContent = 'Пожалуйста, введите корректный email!';
+        return false;
+    }
+    
+    // Отправляем данные на СЕРВЕР (ваш бэкенд)
+    fetch('http://158.160.36.57:8091/feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            name: name, 
+            email: email, 
+            comment: comment,
+            date: new Date().toLocaleString()
+        })
+    })
+    .then(response => response.text())
+    .then(data => {
+        resultElement.innerHTML = `
+            <h3>✅ Спасибо за ваше сообщение, ${name}!</h3>
+            <p>Мы получили ваш комментарий и свяжемся с вами по адресу ${email}.</p>
+            <p><strong>Ваш комментарий:</strong> ${comment}</p>
+        `;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        resultElement.innerHTML = `<p style="color:red">❌ Ошибка отправки данных на сервер</p>`;
+    });
+    
+    document.getElementById('feedback-form').reset();
+    return false;
+}
     </script>
     <style>
     * {
@@ -184,18 +203,12 @@
       color: #e74c3c;
       margin-top: 10px;
       padding: 10px;
-      background-color: #fadbd8;
-      border-radius: 4px;
       text-align: center;
-      border: 1px solid #f5b7b1;
     }
 
     .result {
       margin-top: 20px;
       padding: 15px;
-      background-color: #d5f5e3;
-      border-radius: 4px;
-      border: 1px solid #a3e4d7;
     }
 
     .result h3 {
